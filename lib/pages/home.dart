@@ -1,7 +1,10 @@
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:tra_scan/models/scans.dart';
+import 'package:share/share.dart';
 import 'package:tra_scan/pages/scan.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,7 +35,8 @@ class _HomePageState extends State<HomePage> {
                                 ? 'No scans yet. Use the Scan button to start.'
                                 : '${scans.scans.length} Scan${scans.scans.length > 1 ? 's' : ''}:'),
                             (scans.scans.length > 0
-                                ? ListView(
+                                ? Expanded(
+                                    child: ListView(
                                     children: scans.scans
                                         .map((e) => Container(
                                               child: Text(e),
@@ -41,7 +45,7 @@ class _HomePageState extends State<HomePage> {
                                             ))
                                         .toList(),
                                     shrinkWrap: true,
-                                  )
+                                  ))
                                 : Text('')),
                             Row(children: [
                               Expanded(
@@ -61,14 +65,55 @@ class _HomePageState extends State<HomePage> {
                                     onPressed: scans.scans.length == 0
                                         ? null
                                         : () {
-                                            Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      ScanPage(),
-                                                ));
+                                            exportData(scans.scans);
                                           },
-                                    child: Text('Save')),
+                                    child: Text('Export')),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: scans.scans.length == 0
+                                      ? null
+                                      : () {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) => AlertDialog(
+                                                    title:
+                                                        Text('Are you sure?'),
+                                                    content: Text(
+                                                        'This will delete all scans.\n\nTo save them first, use the Export button and pick a destination.'),
+                                                    actions: <Widget>[
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            Navigator.pop(
+                                                                context);
+                                                          },
+                                                          child:
+                                                              Text('Cancel')),
+                                                      TextButton(
+                                                          onPressed: () {
+                                                            scans.removeAll();
+                                                            Navigator.pop(
+                                                                context);
+                                                            ScaffoldMessenger
+                                                                    .of(context)
+                                                                .showSnackBar(
+                                                                    SnackBar(
+                                                                        content:
+                                                                            Text('Deleted')));
+                                                          },
+                                                          child: Text('Delete'),
+                                                          style: TextButton.styleFrom(
+                                                              primary: Theme.of(
+                                                                      context)
+                                                                  .errorColor))
+                                                    ],
+                                                  ));
+                                        },
+                                  child: Text('Delete All'),
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Theme.of(context).errorColor),
+                                ),
                               )
                             ]),
                           ]);
@@ -78,4 +123,34 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
+}
+
+String generateNowString() {
+  String fillZeros(String string, int length) {
+    while (string.length < length) string = '0' + string;
+    return string;
+  }
+
+  DateTime now = DateTime.now();
+  return now.year.toString() +
+      '-' +
+      fillZeros(now.month.toString(), 2) +
+      '-' +
+      fillZeros(now.day.toString(), 2) +
+      '-' +
+      fillZeros(now.hour.toString(), 2) +
+      '-' +
+      fillZeros(now.minute.toString(), 2) +
+      '-' +
+      fillZeros(now.second.toString(), 2) +
+      '-' +
+      fillZeros(now.millisecond.toString(), 3);
+}
+
+void exportData(List<String> scans) async {
+  String fileName = 'TRAScan-Export-${generateNowString()}.txt';
+  final String path = '${(await getTemporaryDirectory()).path}/$fileName';
+  final File file = File(path);
+  file.writeAsStringSync(scans.join('\n'));
+  await Share.shareFiles([path], text: 'TRAScan Export');
 }
