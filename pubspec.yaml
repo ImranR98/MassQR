@@ -38,6 +38,7 @@ dev_dependencies:
   audioplayers: ^0.18.3
   path_provider: ^2.0.1
   share: ^2.0.1
+  url_launcher: ^6.0.3
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

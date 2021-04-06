@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tra_scan/models/scans.dart';
+import 'package:tra_scan/pages/help.dart';
 import 'package:tra_scan/pages/scan.dart';
 
 class HomePage extends StatefulWidget {
@@ -19,6 +20,19 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('TRAScan'),
+        actions: <Widget>[
+          IconButton(
+            icon: const Icon(Icons.help_outline),
+            tooltip: 'Help',
+            onPressed: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HelpPage(),
+                  ));
+            },
+          ),
+        ],
       ),
       body: Column(
         children: <Widget>[
@@ -156,6 +170,6 @@ Future<String> exportData(List<String> scans) async {
   final String path =
       '${(await getApplicationDocumentsDirectory()).path}/$fileName';
   final File file = File(path);
-  file.writeAsStringSync(scans.join('\n'));
+  await file.writeAsString(scans.join('\n'), flush: true);
   return path;
 }
