@@ -4,7 +4,7 @@ Scan QR codes in quick succession.
 
 Designed for use with TRA receipts that link to pages on https://verify.tra.go.tz.
 
-> Made for Papa.
+> Please excuse the funny sound effects; this App has a very specific use case and has been developed mainly for use by my dad.
 
 
 
