@@ -23,12 +23,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^5.0.0
-  qr_code_scanner: ^0.4.0
-  audioplayers: ^0.18.3
-  path_provider: ^2.0.1
-  share: ^2.0.1
-  url_launcher: ^6.0.3
+  provider: ^5.0.0 # To store and subscribe to app state (scans list)
+  qr_code_scanner: ^0.4.0 # To scan QR codes
+  audioplayers: ^0.18.3 # To play custom sounds
+  path_provider: ^2.0.1 # To get a temp. directory to store the generated .txt file
+  share: ^2.0.1 # To use the OS share sheet to share the aforementioned .txt file
+  url_launcher: ^6.0.3 # To open various links
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

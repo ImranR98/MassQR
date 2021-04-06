@@ -1,8 +1,5 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:path_provider/path_provider.dart';
 
 class HelpPage extends StatefulWidget {
   HelpPage({Key key}) : super(key: key);
@@ -13,13 +10,6 @@ class HelpPage extends StatefulWidget {
 
 class _HelpPageState extends State<HelpPage> {
   String exportDir = '';
-
-  void setDirectory() async {
-    String temp = (await getApplicationDocumentsDirectory()).path;
-    setState(() {
-      exportDir = temp + '/scans';
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,15 +33,11 @@ class _HelpPageState extends State<HelpPage> {
                 SizedBox(
                   height: 10,
                 ),
-                FutureBuilder<Directory>(
-                    future: getApplicationDocumentsDirectory(),
-                    builder: (context, AsyncSnapshot<Directory> snapshot) {
-                      return Text('Press the scan button to scan QR codes and add them to the scans list. Duplicate entries are skipped automatically.\n\n' +
-                          'After scanning all codes, go back to the main screen to view them.\n\n' +
-                          'Use the Export button to share the list to other apps.\n\n' +
-                          'You may want to use the Export feature to email the list to yourself. Be sure to do this BEFORE exiting the app, as the in-app list is not stored permanently.\n\n' +
-                          'To process the file (extract TRA receipt data), use the TRAExtract PC app, available at the link below.\n');
-                    }),
+                Text('Press the scan button to scan QR codes and add them to the scans list. Duplicate entries are skipped automatically.\n\n' +
+                    'After scanning all codes, go back to the main screen to view them.\n\n' +
+                    'Use the Export button to share the list to other apps.\n\n' +
+                    'You may want to use the Export feature to email the list to yourself. Be sure to do this BEFORE exiting the app, as the in-app list is not stored permanently.\n\n' +
+                    'To process the file (extract TRA receipt data), use the TRAExtract PC app, available at the link below.\n'),
                 InkWell(
                   onTap: () {
                     launch('https://github.com/ImranR98/TRAExtract');
