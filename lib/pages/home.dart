@@ -20,23 +20,60 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: <Widget>[
-          ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ScanPage(),
-                    ));
-              },
-              child: Text('Scan')),
-          Consumer<ScansModel>(
-            builder: (context, scans, child) {
-              return ListView(
-                children: scans.scans.map((e) => Text(e)).toList(),
-                shrinkWrap: true,
-              );
-            },
-          )
+          Expanded(
+              child: Padding(
+                  padding: EdgeInsets.all(10),
+                  child: Consumer<ScansModel>(
+                    builder: (context, scans, child) {
+                      return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(scans.scans.length == 0
+                                ? 'No scans yet. Use the Scan button to start.'
+                                : '${scans.scans.length} Scan${scans.scans.length > 1 ? 's' : ''}:'),
+                            (scans.scans.length > 0
+                                ? ListView(
+                                    children: scans.scans
+                                        .map((e) => Container(
+                                              child: Text(e),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 10, 0, 10),
+                                            ))
+                                        .toList(),
+                                    shrinkWrap: true,
+                                  )
+                                : Text('')),
+                            Row(children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                    onPressed: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => ScanPage(),
+                                          ));
+                                    },
+                                    child: Text('Scan')),
+                              ),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: ElevatedButton(
+                                    onPressed: scans.scans.length == 0
+                                        ? null
+                                        : () {
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      ScanPage(),
+                                                ));
+                                          },
+                                    child: Text('Save')),
+                              )
+                            ]),
+                          ]);
+                    },
+                  ))),
         ],
       ),
     );
