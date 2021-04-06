@@ -35,16 +35,20 @@ class _ScanPageState extends State<ScanPage> {
 
   freezeScanner({bool pauseCam = false}) async {
     if (pauseCam) controller?.pauseCamera();
-    setState(() {
-      frozen = true;
-    });
+    if (this.mounted) {
+      setState(() {
+        frozen = true;
+      });
+    }
   }
 
   unfreezeScanner() async {
     controller?.resumeCamera();
-    setState(() {
-      frozen = false;
-    });
+    if (this.mounted) {
+      setState(() {
+        frozen = false;
+      });
+    }
   }
 
   @override

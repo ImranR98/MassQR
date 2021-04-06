@@ -3,6 +3,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share/share.dart';
 import 'package:tra_scan/models/scans.dart';
 import 'package:tra_scan/pages/help.dart';
 import 'package:tra_scan/pages/scan.dart';
@@ -78,12 +79,7 @@ class _HomePageState extends State<HomePage> {
                                     onPressed: scans.scans.length == 0
                                         ? null
                                         : () async {
-                                            String exportedFilePath =
-                                                await exportData(scans.scans);
-                                            ScaffoldMessenger.of(context)
-                                                .showSnackBar(SnackBar(
-                                                    content: Text(
-                                                        'Saved to \'$exportedFilePath\'')));
+                                            await exportData(scans.scans);
                                           },
                                     child: Text('Export')),
                               ),
@@ -165,11 +161,10 @@ String generateNowString() {
       fillZeros(now.millisecond.toString(), 3);
 }
 
-Future<String> exportData(List<String> scans) async {
+Future<void> exportData(List<String> scans) async {
   String fileName = 'TRAScan-Export-${generateNowString()}.txt';
-  final String path =
-      '${(await getApplicationDocumentsDirectory()).path}/$fileName';
+  final String path = '${(await getTemporaryDirectory()).path}/$fileName';
   final File file = File(path);
   await file.writeAsString(scans.join('\n'), flush: true);
-  return path;
+  await Share.shareFiles([path], text: 'TRAScan Export');
 }
