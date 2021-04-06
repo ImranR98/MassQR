@@ -26,4 +26,4 @@ Designed for use with TRA receipts that link to pages on https://verify.tra.go.t
 | ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | <img src="./screenshots/noscans.png" alt="Home Page - No Scans" /> | <img src="./screenshots/scanning.png" alt="Scan Page" />     | <img src="./screenshots/scanlist.png" alt="Home Page - One Scan" /> |
 | **Share Scans**                                              | **Deletion Prompt**                                          | **Home Page - Deleted Scans**                                |
-| <img src="./screenshots/sharesheet.png" alt="Share Scans" /> | <img src="./screenshots/noscans.png" alt="Deletion Prompt" /> | <img src="./screenshots/deleted.png" alt="Home Page - Deleted Scans" /> |
+| <img src="./screenshots/sharesheet.png" alt="Share Scans" /> | <img src="./screenshots/deleteprompt.png" alt="Deletion Prompt" /> | <img src="./screenshots/deleted.png" alt="Home Page - Deleted Scans" /> |
