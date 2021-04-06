@@ -151,19 +151,11 @@ String generateNowString() {
       fillZeros(now.millisecond.toString(), 3);
 }
 
-Future<Directory> getExportDirectory() {
-  if (Platform.isAndroid) {
-    print('Dzung Ha');
-    return getExternalStorageDirectory();
-  } else
-    return getApplicationDocumentsDirectory();
-}
-
 Future<String> exportData(List<String> scans) async {
   String fileName = 'TRAScan-Export-${generateNowString()}.txt';
-  final String path = '${(await getExportDirectory()).path}/$fileName';
+  final String path =
+      '${(await getApplicationDocumentsDirectory()).path}/$fileName';
   final File file = File(path);
   file.writeAsStringSync(scans.join('\n'));
   return path;
-  // await Share.shareFiles([path], text: 'TRAScan Export');
 }
