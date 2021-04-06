@@ -1,4 +1,4 @@
-# tra_scan
+# TRAScan
 
 A new Flutter project.
 

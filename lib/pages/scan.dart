@@ -1,37 +1,56 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:tra_scan/models/scans.dart';
 
-class HomePage extends StatefulWidget {
-  final String title;
-  HomePage({Key key, this.title}) : super(key: key);
+class ScanPage extends StatefulWidget {
+  ScanPage({Key key}) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _ScanPageState createState() => _ScanPageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _ScanPageState extends State<ScanPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  Barcode result;
   QRViewController controller;
+  bool paused = false;
+
+  pauseCamera() async {
+    await controller?.pauseCamera();
+    setState(() {
+      paused = true;
+    });
+  }
+
+  resumeCamera() async {
+    await controller?.resumeCamera();
+    setState(() {
+      paused = false;
+    });
+  }
 
   @override
   void reassemble() {
     super.reassemble();
     if (Platform.isAndroid) {
-      controller.pauseCamera();
+      pauseCamera();
     } else if (Platform.isIOS) {
-      controller.resumeCamera();
+      resumeCamera();
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('TRAScan | Scan'),
+      ),
       body: Column(
         children: <Widget>[
-          Expanded(flex: 4, child: _buildQrView(context)),
+          Expanded(flex: 5, child: _buildQrView(context)),
           Expanded(
             flex: 1,
             child: FittedBox(
@@ -39,72 +58,42 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: <Widget>[
-                  if (result != null)
-                    Text(
-                        'Barcode Type: ${describeEnum(result.format)}   Data: ${result.code}')
-                  else
-                    Text('Scan a code'),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: <Widget>[
                       Container(
                         margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
+                        child: IconButton(
                             onPressed: () async {
                               await controller?.toggleFlash();
                               setState(() {});
                             },
-                            child: FutureBuilder(
+                            icon: FutureBuilder(
                               future: controller?.getFlashStatus(),
                               builder: (context, snapshot) {
-                                return Text('Flash: ${snapshot.data}');
+                                return Icon(snapshot.data != null
+                                    ? Icons.flash_on
+                                    : Icons.flash_off);
                               },
                             )),
                       ),
                       Container(
                         margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
+                        child: IconButton(
                             onPressed: () async {
                               await controller?.flipCamera();
                               setState(() {});
                             },
-                            child: FutureBuilder(
+                            icon: FutureBuilder(
                               future: controller?.getCameraInfo(),
                               builder: (context, snapshot) {
-                                if (snapshot.data != null) {
-                                  return Text(
-                                      'Camera facing ${describeEnum(snapshot.data)}');
-                                } else {
-                                  return Text('loading');
-                                }
+                                return snapshot.data != null
+                                    ? Icon(Icons.switch_camera)
+                                    : Icon(Icons.warning);
                               },
                             )),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.pauseCamera();
-                          },
-                          child: Text('pause', style: TextStyle(fontSize: 20)),
-                        ),
                       ),
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            await controller?.resumeCamera();
-                          },
-                          child: Text('resume', style: TextStyle(fontSize: 20)),
-                        ),
-                      )
                     ],
                   ),
                 ],
@@ -140,10 +129,21 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       this.controller = controller;
     });
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-      });
+    controller.scannedDataStream.listen((scanData) async {
+      ScansModel scans = Provider.of<ScansModel>(context, listen: false);
+      if (!scans.scans.contains(scanData.code)) {
+        scans.add(scanData.code);
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text('Added \'${scanData.code}\'')));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            duration: Duration(seconds: 1),
+            content: Text('Skipped duplicate entry')));
+      }
+
+      await pauseCamera();
+      Timer(Duration(seconds: 1), () async => {await resumeCamera()});
     });
   }
 
