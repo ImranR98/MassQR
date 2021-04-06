@@ -19,3 +19,11 @@ Designed for use with TRA receipts that link to pages on https://verify.tra.go.t
 - You may want to use the Export feature to email the list to yourself. Be sure to do this BEFORE exiting the app, as the in-app list is not stored permanently.
 
 - To process the file (extract TRA receipt data), use the [TRAExtract](https://github.com/ImranR98/TRAExtract) PC app.
+
+## Screenshots
+
+| Home Page - No Scans                                         | Scan Page                                                    | Home Page - One Scan                                         |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| <img src="./screenshots/noscans.png" alt="Home Page - No Scans" /> | <img src="./screenshots/scanning.png" alt="Scan Page" />     | <img src="./screenshots/scanlist.png" alt="Home Page - One Scan" /> |
+| **Share Scans**                                              | **Deletion Prompt**                                          | **Home Page - Deleted Scans**                                |
+| <img src="./screenshots/sharesheet.png" alt="Share Scans" /> | <img src="./screenshots/noscans.png" alt="Deletion Prompt" /> | <img src="./screenshots/noscans.png" alt="Home Page - Deleted Scans" /> |
