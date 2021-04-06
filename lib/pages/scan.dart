@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:audioplayers/audio_cache.dart';
 import 'package:tra_scan/models/scans.dart';
 
 class ScanPage extends StatefulWidget {
@@ -16,30 +17,41 @@ class ScanPage extends StatefulWidget {
 class _ScanPageState extends State<ScanPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   QRViewController controller;
-  bool paused = false;
+  bool frozen = false;
+  final AudioCache player = AudioCache(prefix: 'assets/sounds/');
+  final List<String> nextSounds = [
+    'AnotherOne.mp3',
+    'Continue.mp3',
+    'Next.mp3',
+    'Nyingine.mp3',
+    'OneMore.mp3'
+  ];
+  final List<String> skipSounds = [
+    'AlreadyDone.mp3',
+    'Duplicate.mp3',
+    'Skipping.mp3',
+    'TayariHiyo.mp3'
+  ];
 
-  pauseCamera() async {
+  freezeScanner() async {
     await controller?.pauseCamera();
     setState(() {
-      paused = true;
+      frozen = true;
     });
   }
 
-  resumeCamera() async {
+  unfreezeScanner() async {
     await controller?.resumeCamera();
     setState(() {
-      paused = false;
+      frozen = false;
     });
   }
 
   @override
   void reassemble() {
     super.reassemble();
-    if (Platform.isAndroid) {
-      pauseCamera();
-    } else if (Platform.isIOS) {
-      resumeCamera();
-    }
+    freezeScanner();
+    unfreezeScanner();
   }
 
   @override
@@ -130,20 +142,27 @@ class _ScanPageState extends State<ScanPage> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) async {
-      ScansModel scans = Provider.of<ScansModel>(context, listen: false);
-      if (!scans.scans.contains(scanData.code)) {
-        scans.add(scanData.code);
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(seconds: 1),
-            content: Text('Added \'${scanData.code}\'')));
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-            duration: Duration(seconds: 1),
-            content: Text('Skipped duplicate entry')));
-      }
+      print(frozen);
+      if (!frozen) {
+        ScansModel scans = Provider.of<ScansModel>(context, listen: false);
+        if (!scans.scans.contains(scanData.code)) {
+          scans.add(scanData.code);
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              duration: Duration(seconds: 1),
+              content: Text('Added \'${scanData.code}\'')));
+          nextSounds.shuffle();
+          await player.play(nextSounds[0], volume: 0.33);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              duration: Duration(seconds: 1),
+              content: Text('Skipped duplicate entry')));
+          skipSounds.shuffle();
+          await player.play(skipSounds[0], volume: 0.33);
+        }
 
-      await pauseCamera();
-      Timer(Duration(seconds: 1), () async => {await resumeCamera()});
+        await freezeScanner();
+        Timer(Duration(seconds: 1), () async => {await unfreezeScanner()});
+      }
     });
   }
 
