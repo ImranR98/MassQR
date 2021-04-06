@@ -1,4 +1,4 @@
-package com.example.tra_scan
+package dev.imranr.tra_scan
 
 import io.flutter.embedding.android.FlutterActivity
 

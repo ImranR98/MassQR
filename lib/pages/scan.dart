@@ -33,15 +33,15 @@ class _ScanPageState extends State<ScanPage> {
     'TayariHiyo.mp3'
   ];
 
-  freezeScanner() async {
-    await controller?.pauseCamera();
+  freezeScanner({bool pauseCam = false}) async {
+    if (pauseCam) controller?.pauseCamera();
     setState(() {
       frozen = true;
     });
   }
 
   unfreezeScanner() async {
-    await controller?.resumeCamera();
+    controller?.resumeCamera();
     setState(() {
       frozen = false;
     });
@@ -50,7 +50,7 @@ class _ScanPageState extends State<ScanPage> {
   @override
   void reassemble() {
     super.reassemble();
-    freezeScanner();
+    freezeScanner(pauseCam: true);
     unfreezeScanner();
   }
 
@@ -142,8 +142,9 @@ class _ScanPageState extends State<ScanPage> {
       this.controller = controller;
     });
     controller.scannedDataStream.listen((scanData) async {
-      print(frozen);
-      if (!frozen) {
+      var wasFrozen = frozen;
+      await freezeScanner();
+      if (!wasFrozen) {
         ScansModel scans = Provider.of<ScansModel>(context, listen: false);
         if (!scans.scans.contains(scanData.code)) {
           scans.add(scanData.code);
@@ -160,7 +161,6 @@ class _ScanPageState extends State<ScanPage> {
           await player.play(skipSounds[0], volume: 0.33);
         }
 
-        await freezeScanner();
         Timer(Duration(seconds: 1), () async => {await unfreezeScanner()});
       }
     });

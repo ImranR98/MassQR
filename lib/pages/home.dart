@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:tra_scan/models/scans.dart';
-import 'package:share/share.dart';
 import 'package:tra_scan/pages/scan.dart';
 
 class HomePage extends StatefulWidget {
@@ -64,8 +63,13 @@ class _HomePageState extends State<HomePage> {
                                 child: ElevatedButton(
                                     onPressed: scans.scans.length == 0
                                         ? null
-                                        : () {
-                                            exportData(scans.scans);
+                                        : () async {
+                                            String exportedFilePath =
+                                                await exportData(scans.scans);
+                                            ScaffoldMessenger.of(context)
+                                                .showSnackBar(SnackBar(
+                                                    content: Text(
+                                                        'Saved to \'$exportedFilePath\'')));
                                           },
                                     child: Text('Export')),
                               ),
@@ -147,10 +151,19 @@ String generateNowString() {
       fillZeros(now.millisecond.toString(), 3);
 }
 
-void exportData(List<String> scans) async {
+Future<Directory> getExportDirectory() {
+  if (Platform.isAndroid) {
+    print('Dzung Ha');
+    return getExternalStorageDirectory();
+  } else
+    return getApplicationDocumentsDirectory();
+}
+
+Future<String> exportData(List<String> scans) async {
   String fileName = 'TRAScan-Export-${generateNowString()}.txt';
-  final String path = '${(await getTemporaryDirectory()).path}/$fileName';
+  final String path = '${(await getExportDirectory()).path}/$fileName';
   final File file = File(path);
   file.writeAsStringSync(scans.join('\n'));
-  await Share.shareFiles([path], text: 'TRAScan Export');
+  return path;
+  // await Share.shareFiles([path], text: 'TRAScan Export');
 }
