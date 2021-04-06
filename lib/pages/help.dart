@@ -27,9 +27,11 @@ class _HelpPageState extends State<HelpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Scan QR Codes.',
+                  'Scan QR codes in quick succession.',
                   textScaleFactor: 2,
                 ),
+                Text(
+                    'Designed for use with TRA receipts that link to pages on https://verify.tra.go.tz.'),
                 SizedBox(
                   height: 10,
                 ),
