@@ -15,8 +15,14 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
         title: 'TRAScan',
         theme: ThemeData(
-          primarySwatch: Colors.amber,
-        ),
+            primarySwatch: Colors.amber,
+            primaryColor: Colors.amber,
+            brightness: Brightness.light),
+        darkTheme: ThemeData(
+            primarySwatch: Colors.amber,
+            primaryColor: Colors.amber,
+            brightness: Brightness.dark),
+        themeMode: ThemeMode.system,
         home: HomePage());
   }
 }

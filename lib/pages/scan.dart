@@ -33,7 +33,7 @@ class _ScanPageState extends State<ScanPage> {
     'TayariHiyo.mp3'
   ];
 
-  freezeScanner({bool pauseCam = false}) async {
+  freezeScanner({bool pauseCam = true}) async {
     if (pauseCam) controller?.pauseCamera();
     if (this.mounted) {
       setState(() {
@@ -54,7 +54,7 @@ class _ScanPageState extends State<ScanPage> {
   @override
   void reassemble() {
     super.reassemble();
-    freezeScanner(pauseCam: true);
+    freezeScanner();
     unfreezeScanner();
   }
 
