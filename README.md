@@ -18,7 +18,7 @@ Designed for use with TRA receipts that link to pages on https://verify.tra.go.t
 
 - You may want to use the Export feature to email the list to yourself. Be sure to do this BEFORE exiting the app, as the in-app list is not stored permanently.
 
-- To process the file (extract TRA receipt data), use the [TRAExtract](https://github.com/ImranR98/TRAExtract) PC app.
+- To process the file (extract TRA receipt data), use the [TRAExtract](https://github.com/ImranR98/TRAExtract/releases) PC app.
 
 ## Screenshots
 
