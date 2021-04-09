@@ -1,11 +1,10 @@
-import 'dart:async';
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:tra_scan/models/scans.dart';
+import 'package:vibration/vibration.dart';
 
 class ScanPage extends StatefulWidget {
   ScanPage({Key key}) : super(key: key);
@@ -110,6 +109,19 @@ class _ScanPageState extends State<ScanPage> {
                               },
                             )),
                       ),
+                      Container(
+                        margin: EdgeInsets.all(8),
+                        child: IconButton(
+                            onPressed: frozen
+                                ? () async {
+                                    await unfreezeScanner();
+                                  }
+                                : null,
+                            icon: frozen
+                                ? Icon(Icons.play_arrow,
+                                    color: Theme.of(context).primaryColor)
+                                : Icon(Icons.pause)),
+                      ),
                     ],
                   ),
                 ],
@@ -157,15 +169,15 @@ class _ScanPageState extends State<ScanPage> {
               content: Text('Added \'${scanData.code}\'')));
           nextSounds.shuffle();
           await player.play(nextSounds[0], volume: 0.33);
+          if (await Vibration.hasVibrator()) Vibration.vibrate(duration: 50);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               duration: Duration(seconds: 1),
               content: Text('Skipped duplicate entry')));
           skipSounds.shuffle();
           await player.play(skipSounds[0], volume: 0.33);
+          if (await Vibration.hasVibrator()) Vibration.vibrate();
         }
-
-        Timer(Duration(seconds: 1), () async => {await unfreezeScanner()});
       }
     });
   }
