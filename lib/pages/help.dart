@@ -45,7 +45,10 @@ class _HelpPageState extends State<HelpPage> {
                     'To process the file (extract TRA receipt data), use the TRAExtract PC app, available at the link below.\n'),
                 InkWell(
                   onTap: () {
-                    launch('https://github.com/ImranR98/TRAExtract');
+                    launchUrl(Uri(
+                        scheme: 'https',
+                        host: 'github.com',
+                        path: '/ImranR98/TRAExtract'));
                   },
                   child: Text(
                     'Get TRAExtract',
@@ -64,7 +67,7 @@ class _HelpPageState extends State<HelpPage> {
                     children: [
                       InkWell(
                         onTap: () {
-                          launch('https://imranr.dev');
+                          launchUrl(Uri(scheme: 'https', host: 'imranr.dev'));
                         },
                         child: Text(
                           'Website',
@@ -74,7 +77,10 @@ class _HelpPageState extends State<HelpPage> {
                       ),
                       InkWell(
                         onTap: () {
-                          launch('https://github.com/ImranR98/TRAScan');
+                          launchUrl(Uri(
+                              scheme: 'https',
+                              host: 'github.com',
+                              path: '/ImranR98/TRAScan'));
                         },
                         child: Text(
                           'Source',

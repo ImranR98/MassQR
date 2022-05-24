@@ -15,7 +15,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
 # Read more about iOS versioning at
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
-version: 1.0.0+2
+version: 1.0.0+3
 
 environment:
   sdk: ">=2.7.0 <3.0.0"
@@ -23,9 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  provider: ^5.0.0 # To store and subscribe to app state (scans list)
-  qr_code_scanner: ^0.4.0 # To scan QR codes
-  audioplayers: ^0.18.3 # To play custom sounds
+  provider: ^6.0.3 # To store and subscribe to app state (scans list)
+  mobile_scanner: ^1.1.1 # To scan QR codes
+  audioplayers: ^0.20.1 # To play custom sounds
   path_provider: ^2.0.1 # To get a temp. directory to store the generated .txt file
   share: ^2.0.1 # To use the OS share sheet to share the aforementioned .txt file
   url_launcher: ^6.0.3 # To open various links

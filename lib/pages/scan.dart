@@ -1,8 +1,7 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
-import 'package:audioplayers/audio_cache.dart';
+import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:tra_scan/models/scans.dart';
 import 'package:vibration/vibration.dart';
 
@@ -15,7 +14,7 @@ class ScanPage extends StatefulWidget {
 
 class _ScanPageState extends State<ScanPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
-  QRViewController controller;
+  MobileScannerController controller = MobileScannerController();
   bool frozen = false;
   final AudioCache player = AudioCache(prefix: 'assets/sounds/');
   final List<String> nextSounds = [
@@ -33,7 +32,7 @@ class _ScanPageState extends State<ScanPage> {
   ];
 
   freezeScanner({bool pauseCam = true}) async {
-    if (pauseCam) controller?.pauseCamera();
+    if (pauseCam) controller.stop();
     if (this.mounted) {
       setState(() {
         frozen = true;
@@ -42,7 +41,7 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   unfreezeScanner() async {
-    controller?.resumeCamera();
+    controller.start();
     if (this.mounted) {
       setState(() {
         frozen = false;
@@ -80,34 +79,40 @@ class _ScanPageState extends State<ScanPage> {
                       Container(
                         margin: EdgeInsets.all(8),
                         child: IconButton(
-                            onPressed: () async {
-                              await controller?.toggleFlash();
-                              setState(() {});
+                          color: Colors.white,
+                          icon: ValueListenableBuilder(
+                            valueListenable: controller.torchState,
+                            builder: (context, state, child) {
+                              switch (state as TorchState) {
+                                case TorchState.off:
+                                  return const Icon(Icons.flash_off);
+                                case TorchState.on:
+                                  return const Icon(Icons.flash_on);
+                              }
+                              return null;
                             },
-                            icon: FutureBuilder(
-                              future: controller?.getFlashStatus(),
-                              builder: (context, snapshot) {
-                                return Icon(snapshot.data != null
-                                    ? Icons.flash_on
-                                    : Icons.flash_off);
-                              },
-                            )),
+                          ),
+                          onPressed: () => controller.toggleTorch(),
+                        ),
                       ),
                       Container(
                         margin: EdgeInsets.all(8),
                         child: IconButton(
-                            onPressed: () async {
-                              await controller?.flipCamera();
-                              setState(() {});
+                          color: Colors.white,
+                          icon: ValueListenableBuilder(
+                            valueListenable: controller.cameraFacingState,
+                            builder: (context, state, child) {
+                              switch (state as CameraFacing) {
+                                case CameraFacing.front:
+                                  return const Icon(Icons.camera_front);
+                                case CameraFacing.back:
+                                  return const Icon(Icons.camera_rear);
+                              }
+                              return null;
                             },
-                            icon: FutureBuilder(
-                              future: controller?.getCameraInfo(),
-                              builder: (context, snapshot) {
-                                return snapshot.data != null
-                                    ? Icon(Icons.switch_camera)
-                                    : Icon(Icons.warning);
-                              },
-                            )),
+                          ),
+                          onPressed: () => controller.switchCamera(),
+                        ),
                       ),
                       Container(
                         margin: EdgeInsets.all(8),
@@ -134,57 +139,36 @@ class _ScanPageState extends State<ScanPage> {
   }
 
   Widget _buildQrView(BuildContext context) {
-    // For this example we check how width or tall the device is and change the scanArea and overlay accordingly.
-    var scanArea = (MediaQuery.of(context).size.width < 400 ||
-            MediaQuery.of(context).size.height < 400)
-        ? 150.0
-        : 300.0;
-    // To ensure the Scanner view is properly sizes after rotation
-    // we need to listen for Flutter SizeChanged notification and update controller
-    return QRView(
-      key: qrKey,
-      onQRViewCreated: _onQRViewCreated,
-      overlay: QrScannerOverlayShape(
-          borderColor: Colors.red,
-          borderRadius: 10,
-          borderLength: 30,
-          borderWidth: 10,
-          cutOutSize: scanArea),
-    );
-  }
-
-  void _onQRViewCreated(QRViewController controller) {
-    setState(() {
-      this.controller = controller;
-    });
-    controller.scannedDataStream.listen((scanData) async {
-      var wasFrozen = frozen;
-      await freezeScanner();
-      if (!wasFrozen) {
-        ScansModel scans = Provider.of<ScansModel>(context, listen: false);
-        if (!scans.scans.contains(scanData.code)) {
-          scans.add(scanData.code);
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 1),
-              content: Text('Added \'${scanData.code}\'')));
-          nextSounds.shuffle();
-          await player.play(nextSounds[0], volume: 0.33);
-          if (await Vibration.hasVibrator()) Vibration.vibrate(duration: 50);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              duration: Duration(seconds: 1),
-              content: Text('Skipped duplicate entry')));
-          skipSounds.shuffle();
-          await player.play(skipSounds[0], volume: 0.33);
-          if (await Vibration.hasVibrator()) Vibration.vibrate();
-        }
-      }
-    });
+    return MobileScanner(
+        key: qrKey,
+        controller: controller,
+        onDetect: (barcode, args) async {
+          if (barcode.rawValue != null) {
+            ScansModel scans = Provider.of<ScansModel>(context, listen: false);
+            if (!scans.scans.contains(barcode.rawValue)) {
+              scans.add(barcode.rawValue);
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text('Added \'${barcode.rawValue}\'')));
+              nextSounds.shuffle();
+              await player.play(nextSounds[0], volume: 0.33);
+              if (await Vibration.hasVibrator())
+                Vibration.vibrate(duration: 50);
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  duration: Duration(seconds: 1),
+                  content: Text('Skipped duplicate entry')));
+              skipSounds.shuffle();
+              await player.play(skipSounds[0], volume: 0.33);
+              if (await Vibration.hasVibrator()) Vibration.vibrate();
+            }
+          }
+        });
   }
 
   @override
   void dispose() {
-    controller?.dispose();
+    controller.dispose();
     super.dispose();
   }
 }
