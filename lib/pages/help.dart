@@ -53,7 +53,7 @@ class _HelpPageState extends State<HelpPage> {
                               mode: LaunchMode.externalApplication);
                         },
                         child: Text(
-                          'Website',
+                          'Developer',
                           style:
                               TextStyle(decoration: TextDecoration.underline),
                         ),

@@ -16,31 +16,6 @@ class _ScanPageState extends State<ScanPage> {
   MobileScannerController controller = MobileScannerController();
   bool frozen = false;
 
-  freezeScanner({bool pauseCam = true}) async {
-    if (pauseCam) controller.stop();
-    if (this.mounted) {
-      setState(() {
-        frozen = true;
-      });
-    }
-  }
-
-  unfreezeScanner() async {
-    controller.start();
-    if (this.mounted) {
-      setState(() {
-        frozen = false;
-      });
-    }
-  }
-
-  @override
-  void reassemble() {
-    super.reassemble();
-    freezeScanner();
-    unfreezeScanner();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -98,19 +73,6 @@ class _ScanPageState extends State<ScanPage> {
                           ),
                           onPressed: () => controller.switchCamera(),
                         ),
-                      ),
-                      Container(
-                        margin: EdgeInsets.all(8),
-                        child: IconButton(
-                            onPressed: frozen
-                                ? () async {
-                                    await unfreezeScanner();
-                                  }
-                                : null,
-                            icon: frozen
-                                ? Icon(Icons.play_arrow,
-                                    color: Theme.of(context).primaryColor)
-                                : Icon(Icons.pause)),
                       ),
                     ],
                   ),
