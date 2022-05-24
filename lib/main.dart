@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:tra_scan/models/scans.dart';
-import 'package:tra_scan/pages/home.dart';
+import 'package:mass_qr/models/scans.dart';
+import 'package:mass_qr/pages/home.dart';
 
 void main() {
   runApp(ChangeNotifierProvider(
@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-        title: 'TRAScan',
+        title: 'MassQR',
         theme: ThemeData(
             primarySwatch: Colors.amber,
             primaryColor: Colors.amber,

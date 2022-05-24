@@ -15,7 +15,7 @@ class _HelpPageState extends State<HelpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TRAScan | Help'),
+        title: Text('MassQR | Help'),
       ),
       body: Padding(
         padding: EdgeInsets.all(10.0),
@@ -27,47 +27,30 @@ class _HelpPageState extends State<HelpPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Scan QR codes in quick succession.',
+                  'Scan Several QR Codes in Quick Succession.',
                   textScaleFactor: 2,
                 ),
                 SizedBox(
                   height: 10,
                 ),
-                Text(
-                    'Designed for use with TRA receipts that link to pages on https://verify.tra.go.tz.'),
-                SizedBox(
-                  height: 10,
-                ),
-                Text('Press the scan button to scan QR codes and add them to the scans list. Duplicate entries are skipped automatically.\n\n' +
+                Text('Press the "Scan" button to scan QR codes and add them to the scans list. Duplicate entries are skipped automatically.\n\n' +
                     'After scanning all codes, go back to the main screen to view them.\n\n' +
-                    'Use the Export button to share the list to other apps.\n\n' +
-                    'You may want to use the Export feature to email the list to yourself. Be sure to do this BEFORE exiting the app, as the in-app list is not stored permanently.\n\n' +
-                    'To process the file (extract TRA receipt data), use the TRAExtract PC app, available at the link below.\n'),
-                InkWell(
-                  onTap: () {
-                    launchUrl(Uri(
-                        scheme: 'https',
-                        host: 'github.com',
-                        path: '/ImranR98/TRAExtract'));
-                  },
-                  child: Text(
-                    'Get TRAExtract',
-                    style: TextStyle(decoration: TextDecoration.underline),
-                  ),
-                )
+                    'Use the "Export" button to share the list to other apps.\n\n' +
+                    'To clear the list, use the "Delete All" button or exit the app.\n'),
               ],
             ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Made for Papa.'),
-                SizedBox(height: 20),
+                // Text('Made for Papa.'),
+                // SizedBox(height: 20),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       InkWell(
                         onTap: () {
-                          launchUrl(Uri(scheme: 'https', host: 'imranr.dev'));
+                          launchUrl(Uri(scheme: 'https', host: 'imranr.dev'),
+                              mode: LaunchMode.externalApplication);
                         },
                         child: Text(
                           'Website',
@@ -77,10 +60,12 @@ class _HelpPageState extends State<HelpPage> {
                       ),
                       InkWell(
                         onTap: () {
-                          launchUrl(Uri(
-                              scheme: 'https',
-                              host: 'github.com',
-                              path: '/ImranR98/TRAScan'));
+                          launchUrl(
+                              Uri(
+                                  scheme: 'https',
+                                  host: 'github.com',
+                                  path: '/ImranR98/MassQR'),
+                              mode: LaunchMode.externalApplication);
                         },
                         child: Text(
                           'Source',

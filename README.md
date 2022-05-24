@@ -1,10 +1,6 @@
-# TRAScan
+# MassQR
 
-Scan QR codes in quick succession.
-
-Designed for use with TRA receipts that link to pages on https://verify.tra.go.tz.
-
-> Please excuse the funny sound effects; this App has a very specific use case and has been developed mainly for use by my dad.
+Scan Several QR Codes in Quick Succession.
 
 
 
@@ -17,8 +13,6 @@ Designed for use with TRA receipts that link to pages on https://verify.tra.go.t
 - Use the Export button to share the list to other apps.
 
 - You may want to use the Export feature to email the list to yourself. Be sure to do this BEFORE exiting the app, as the in-app list is not stored permanently.
-
-> - To process the file (extract TRA receipt data), use the [TRAExtract](https://github.com/ImranR98/TRAExtract/releases) PC app \[No Longer Works\].
 
 ## Screenshots
 

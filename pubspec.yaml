@@ -1,5 +1,5 @@
-name: tra_scan
-description: A new Flutter project.
+name: mass_qr
+description: Scan Several QR Codes in Quick Succession.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -25,7 +25,6 @@ dependencies:
     sdk: flutter
   provider: ^6.0.3 # To store and subscribe to app state (scans list)
   mobile_scanner: ^1.1.1 # To scan QR codes
-  audioplayers: ^0.20.1 # To play custom sounds
   path_provider: ^2.0.1 # To get a temp. directory to store the generated .txt file
   share: ^2.0.1 # To use the OS share sheet to share the aforementioned .txt file
   url_launcher: ^6.0.3 # To open various links
@@ -57,16 +56,8 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  assets:
-    - assets/sounds/AlreadyDone.mp3
-    - assets/sounds/AnotherOne.mp3
-    - assets/sounds/Continue.mp3
-    - assets/sounds/Duplicate.mp3
-    - assets/sounds/Next.mp3
-    - assets/sounds/Nyingine.mp3
-    - assets/sounds/OneMore.mp3
-    - assets/sounds/Skipping.mp3
-    - assets/sounds/TayariHiyo.mp3
+  # assets:
+  #   - assets/images/image.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

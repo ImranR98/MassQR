@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:audioplayers/audioplayers.dart';
-import 'package:tra_scan/models/scans.dart';
+import 'package:mass_qr/models/scans.dart';
 import 'package:vibration/vibration.dart';
 
 class ScanPage extends StatefulWidget {
@@ -16,20 +15,6 @@ class _ScanPageState extends State<ScanPage> {
   final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   MobileScannerController controller = MobileScannerController();
   bool frozen = false;
-  final AudioCache player = AudioCache(prefix: 'assets/sounds/');
-  final List<String> nextSounds = [
-    'AnotherOne.mp3',
-    'Continue.mp3',
-    'Next.mp3',
-    'Nyingine.mp3',
-    'OneMore.mp3'
-  ];
-  final List<String> skipSounds = [
-    'AlreadyDone.mp3',
-    'Duplicate.mp3',
-    'Skipping.mp3',
-    'TayariHiyo.mp3'
-  ];
 
   freezeScanner({bool pauseCam = true}) async {
     if (pauseCam) controller.stop();
@@ -60,7 +45,7 @@ class _ScanPageState extends State<ScanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TRAScan | Scan'),
+        title: Text('MassQR | Scan'),
       ),
       body: Column(
         children: <Widget>[
@@ -150,16 +135,12 @@ class _ScanPageState extends State<ScanPage> {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   duration: Duration(seconds: 1),
                   content: Text('Added \'${barcode.rawValue}\'')));
-              nextSounds.shuffle();
-              await player.play(nextSounds[0], volume: 0.33);
               if (await Vibration.hasVibrator())
                 Vibration.vibrate(duration: 50);
             } else {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   duration: Duration(seconds: 1),
                   content: Text('Skipped duplicate entry')));
-              skipSounds.shuffle();
-              await player.play(skipSounds[0], volume: 0.33);
               if (await Vibration.hasVibrator()) Vibration.vibrate();
             }
           }

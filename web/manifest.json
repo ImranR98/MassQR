@@ -1,6 +1,6 @@
 {
-    "name": "tra_scan",
-    "short_name": "tra_scan",
+    "name": "mass_qr",
+    "short_name": "mass_qr",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

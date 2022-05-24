@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
-import 'package:tra_scan/models/scans.dart';
-import 'package:tra_scan/pages/help.dart';
-import 'package:tra_scan/pages/scan.dart';
+import 'package:mass_qr/models/scans.dart';
+import 'package:mass_qr/pages/help.dart';
+import 'package:mass_qr/pages/scan.dart';
 
 class HomePage extends StatefulWidget {
   HomePage({Key key}) : super(key: key);
@@ -19,7 +19,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('TRAScan'),
+        title: Text('MassQR'),
         actions: <Widget>[
           IconButton(
             icon: const Icon(Icons.help_outline),
@@ -161,9 +161,9 @@ String generateNowString() {
 }
 
 Future<void> exportData(List<String> scans) async {
-  String fileName = 'TRAScan-Export-${generateNowString()}.txt';
+  String fileName = 'MassQR-Export-${generateNowString()}.txt';
   final String path = '${(await getTemporaryDirectory()).path}/$fileName';
   final File file = File(path);
   await file.writeAsString(scans.join('\n'), flush: true);
-  await Share.shareFiles([path], text: 'TRAScan Export');
+  await Share.shareFiles([path], text: 'MassQR Export');
 }

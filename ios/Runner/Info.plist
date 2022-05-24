@@ -42,6 +42,6 @@
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
 	<key>CFBundleDisplayName</key>
-	<string>TRAScan</string>
+	<string>MassQR</string>
 </dict>
 </plist>
